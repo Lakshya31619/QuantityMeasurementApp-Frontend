@@ -1,15 +1,33 @@
-<h2>Login</h2>
+<div class="auth-wrapper">
 
-<input [(ngModel)]="form.email" placeholder="Email">
-<input [(ngModel)]="form.password" type="password" placeholder="Password">
+  <!-- LEFT -->
+  <div class="auth-left">
+    <img src="assets/app.png" alt="App Image">
+    <h3>QUANTITY MEASUREMENT APP</h3>
+  </div>
 
-<button (click)="login()">Login</button>
+  <!-- RIGHT -->
+  <div class="auth-right">
 
-<hr>
+    <div class="auth-tabs">
+      <span class="active">LOGIN</span>
+      <span (click)="goToSignup()">SIGNUP</span>
+    </div>
 
-<div id="google-btn"></div>
+    <form (ngSubmit)="login()">
 
-<p>
-  Don't have an account?
-  <a routerLink="/signup">Signup here</a>
-</p>
+      <input [(ngModel)]="form.email" name="email" placeholder="Email">
+
+      <input [(ngModel)]="form.password" name="password" type="password" placeholder="Password">
+
+      <button class="auth-btn">Login</button>
+
+    </form>
+
+    <div class="google-btn">
+      <div id="google-btn"></div>
+    </div>
+
+  </div>
+
+</div>
