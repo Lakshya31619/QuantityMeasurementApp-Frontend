@@ -1,19 +1,68 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor,
+  HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 
-export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+// Routes that guests are allowed to hit — a 401/403 on these should NOT
+// redirect to login (guests can calculate without an account).
+const GUEST_ALLOWED_PATHS = [
+  '/api/quantity/convert',
+  '/api/quantity/compare',
+  '/api/quantity/add',
+  '/api/quantity/subtract',
+  '/api/quantity/multiply',
+  '/api/quantity/divide',
+  '/api/quantity/operate',
+  '/api/auth/login',
+  '/api/auth/signup',
+  '/api/auth/google'
+];
 
-  const tokenService = inject(TokenService);
-  const token = tokenService.getToken();
+@Injectable()
+export class JwtInterceptor implements HttpInterceptor {
 
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+  constructor(
+    private tokenService: TokenService,
+    private router: Router
+  ) {}
+
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
+    const token = this.tokenService.getToken();
+
+    // Always attach JWT when we have one — this is how logged-in users
+    // get their history saved server-side during calculate calls.
+    if (token) {
+      request = request.clone({
+        setHeaders: { Authorization: `Bearer ${token}` }
+      });
+    }
+
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+
+        if (error.status === 401 || error.status === 403) {
+          const url = request.url;
+          const isGuestAllowed = GUEST_ALLOWED_PATHS.some(path => url.includes(path));
+
+          if (!isGuestAllowed) {
+            // Protected route (e.g. /api/quantity/history) — clear token and redirect
+            this.tokenService.clear();
+            this.router.navigate(['/login']);
+          }
+          // Guest-allowed route — just surface the error, don't redirect
+        }
+
+        return throwError(() => error);
+      })
+    );
   }
-
-  return next(req);
-};
+}

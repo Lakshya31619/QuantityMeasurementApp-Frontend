@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+// NOTE: This is the CORE auth service used by LoginComponent and SignupComponent.
+// It does NOT include saveHistory — guest history replay is handled by
+// replaying operations through QuantityService directly (in login.component.ts).
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
@@ -18,9 +22,5 @@ export class AuthService {
 
   googleLogin(token: string) {
     return this.http.post(`${this.API}/google`, { token });
-  }
-
-  saveHistory(data: any) {
-    return this.http.post(`http://localhost:8080/api/history`, data);
   }
 }
