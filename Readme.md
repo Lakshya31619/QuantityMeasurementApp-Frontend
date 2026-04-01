@@ -1,1 +1,1 @@
-//DEV//
+# Quantity Measurement App

@@ -1,0 +1,33 @@
+<div class="auth-wrapper">
+
+  <!-- LEFT -->
+  <div class="auth-left">
+    <img src="assets/app.png" alt="App Image">
+    <h3>QUANTITY MEASUREMENT APP</h3>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="auth-right">
+
+    <div class="auth-tabs">
+      <span (click)="goToLogin()">LOGIN</span>
+      <span class="active">SIGNUP</span>
+    </div>
+
+    <form (ngSubmit)="signup()">
+
+      <input [(ngModel)]="form.email" name="email" placeholder="Email" required>
+
+      <input [(ngModel)]="form.password" name="password" type="password" placeholder="Password" required>
+
+      <button class="auth-btn">Signup</button>
+
+    </form>
+
+    <div class="google-btn">
+      <div id="google-btn-signup"></div>
+    </div>
+
+  </div>
+
+</div>

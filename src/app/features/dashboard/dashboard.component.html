@@ -1,0 +1,147 @@
+<div class="navbar">
+  <div class="title">Quantity Measurement App</div>
+  <div class="nav-actions">
+
+    <button type="button" class="btn-ghost" (click)="toggleHistory()">
+      {{ isLoggedIn ? 'History' : 'History (Login required)' }}
+    </button>
+
+    <button type="button" class="btn-ghost" (click)="authAction()">
+      {{ isLoggedIn ? 'Logout' : 'Login' }}
+    </button>
+  </div>
+</div>
+
+<div class="container layout">
+
+  <div class="main-card">
+
+    <label class="label-caps">Operation</label>
+    <div class="type-grid">
+      <div class="type-tile" [class.active]="operation === 'convert'"
+           (click)="operation='convert'; result=null; errorMessage=null">
+        <div class="icon">🔄</div>
+        <span>Convert</span>
+      </div>
+      <div class="type-tile" [class.active]="operation === 'compare'"
+           (click)="operation='compare'; result=null; errorMessage=null">
+        <div class="icon">⚖️</div>
+        <span>Compare</span>
+      </div>
+      <div class="type-tile" [class.active]="operation === 'add'"
+           (click)="operation='add'; result=null; errorMessage=null">
+        <div class="icon">➕</div>
+        <span>Add</span>
+      </div>
+      <div class="type-tile" [class.active]="operation === 'subtract'"
+           (click)="operation='subtract'; result=null; errorMessage=null">
+        <div class="icon">➖</div>
+        <span>Subtract</span>
+      </div>
+      <div class="type-tile" [class.active]="operation === 'multiply'"
+           (click)="operation='multiply'; result=null; errorMessage=null">
+        <div class="icon">✖️</div>
+        <span>Multiply</span>
+      </div>
+      <div class="type-tile" [class.active]="operation === 'divide'"
+           (click)="operation='divide'; result=null; errorMessage=null">
+        <div class="icon">➗</div>
+        <span>Divide</span>
+      </div>
+    </div>
+
+    <label class="label-caps">Choose Type</label>
+    <div class="type-grid">
+      <div class="type-tile" [class.active]="form.measurementType === 'LENGTH'"
+           (click)="form.measurementType = 'LENGTH'; onMeasurementTypeChange()">
+        <div class="icon">📏</div>
+        <span>Length</span>
+      </div>
+      <div class="type-tile" [class.active]="form.measurementType === 'TEMPERATURE'"
+           (click)="form.measurementType = 'TEMPERATURE'; onMeasurementTypeChange()">
+        <div class="icon">🌡️</div>
+        <span>Temperature</span>
+      </div>
+      <div class="type-tile" [class.active]="form.measurementType === 'VOLUME'"
+           (click)="form.measurementType = 'VOLUME'; onMeasurementTypeChange()">
+        <div class="icon">🧪</div>
+        <span>Volume</span>
+      </div>
+      <div class="type-tile" [class.active]="form.measurementType === 'WEIGHT'"
+           (click)="form.measurementType = 'WEIGHT'; onMeasurementTypeChange()">
+        <div class="icon">⚖️</div>
+        <span>Weight</span>
+      </div>
+    </div>
+
+    <div class="conversion-row">
+      <div class="unit-card">
+        <label>From</label>
+        <input type="number" [(ngModel)]="form.value1" class="big-input">
+        <select [(ngModel)]="form.unit1" class="unit-select">
+          <option *ngFor="let u of currentUnits" [value]="u.value">{{ u.label }}</option>
+        </select>
+      </div>
+
+      <div class="unit-card">
+        <label>{{ isBinaryOperation ? 'Value 2' : 'To' }}</label>
+        <input type="number" [(ngModel)]="form.value2" class="big-input"
+               [readonly]="!isBinaryOperation">
+        <select [(ngModel)]="form.unit2" class="unit-select">
+          <option *ngFor="let u of currentUnits" [value]="u.value">{{ u.label }}</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="button" class="btn-calculate" (click)="calculate()" [disabled]="isLoading">
+      {{ isLoading ? 'Calculating...' : 'Calculate' }}
+    </button>
+
+    <div class="error-display" *ngIf="errorMessage">
+      ⚠️ {{ errorMessage }}
+    </div>
+
+    <ng-container *ngIf="result">
+
+      <div class="result-display" *ngIf="result.resultQuantity as rq">
+        <h3>
+          {{ rq.value | number:'1.0-4' }}
+          <small>{{ rq.unitName }}</small>
+        </h3>
+      </div>
+
+      <div class="result-display"
+           *ngIf="result.hasOwnProperty('comparisonResult') && !result.resultQuantity">
+        Are they equal?
+        <span [class.text-success]="result.comparisonResult"
+              [class.text-error]="!result.comparisonResult">
+          {{ result.comparisonResult ? 'Yes ✓' : 'No ✗' }}
+        </span>
+      </div>
+
+    </ng-container>
+
+  </div>
+
+  <div class="history-card" *ngIf="showHistory && isLoggedIn">
+    <h3>Recent History</h3>
+
+    <p *ngIf="history.length === 0" class="empty-history">No history yet.</p>
+
+    <div *ngFor="let item of history" class="history-line">
+      <strong>{{ item.operationType }}</strong>
+      <span>{{ item.resultOperandValue }} {{ item.resultUnit }}</span>
+    </div>
+  </div>
+
+  <div class="history-card" *ngIf="showHistory && !isLoggedIn">
+    <p>
+      Please
+      <a (click)="authAction()" style="cursor:pointer; text-decoration:underline;">
+        login
+      </a>
+      to view your history.
+    </p>
+  </div>
+
+</div>
