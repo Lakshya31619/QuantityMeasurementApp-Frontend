@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 // NOTE: This is the CORE auth service used by LoginComponent and SignupComponent.
 // It does NOT include saveHistory — guest history replay is handled by
@@ -8,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private API = 'http://localhost:8080/api/auth';
+  private API = `${environment.apiUrl}/api/auth`;
 
   constructor(private http: HttpClient) {}
 
