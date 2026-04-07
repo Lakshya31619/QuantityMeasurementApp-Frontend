@@ -1,26 +1,37 @@
 <div class="auth-wrapper">
 
   <div class="auth-left">
-    <img src="assets/app.png" alt="App Image">
-    <h3>QUANTITY MEASUREMENT APP</h3>
+    <img src="assets/app.png" alt="Quantify">
+    <h3>Measure anything,<br>with precision.</h3>
   </div>
 
   <div class="auth-right">
 
     <div class="auth-tabs">
-      <span class="active">LOGIN</span>
-      <span (click)="goToSignup()">SIGNUP</span>
+      <span class="active">Login</span>
+      <span (click)="goToSignup()">Sign Up</span>
     </div>
+
+    <h2>Welcome back</h2>
+    <p class="auth-sub">Sign in to access your measurement history.</p>
 
     <form (ngSubmit)="login()">
 
-      <input [(ngModel)]="form.email" name="email" placeholder="Email">
+      <div class="field-wrap">
+        <label for="login-email">Email address</label>
+        <input id="login-email" [(ngModel)]="form.email" name="email" type="email" placeholder="you@example.com">
+      </div>
 
-      <input [(ngModel)]="form.password" name="password" type="password" placeholder="Password">
+      <div class="field-wrap">
+        <label for="login-password">Password</label>
+        <input id="login-password" [(ngModel)]="form.password" name="password" type="password" placeholder="••••••••">
+      </div>
 
-      <button class="auth-btn">Login</button>
+      <button class="auth-btn" type="submit">Sign In →</button>
 
     </form>
+
+    <div class="auth-divider">or continue with</div>
 
     <div class="google-btn">
       <div id="google-btn"></div>
