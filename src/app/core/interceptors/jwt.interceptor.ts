@@ -14,13 +14,12 @@ import { TokenService } from '../services/token.service';
 // Routes that guests are allowed to hit — a 401/403 on these should NOT
 // redirect to login (guests can calculate without an account).
 const GUEST_ALLOWED_PATHS = [
-  '/api/quantity/convert',
-  '/api/quantity/compare',
-  '/api/quantity/add',
-  '/api/quantity/subtract',
-  '/api/quantity/multiply',
-  '/api/quantity/divide',
-  '/api/quantity/operate',
+  '/api/conversion/convert',
+  '/api/conversion/compare',
+  '/api/arithmetic/add',
+  '/api/arithmetic/subtract',
+  '/api/arithmetic/multiply',
+  '/api/arithmetic/divide',
   '/api/auth/login',
   '/api/auth/signup',
   '/api/auth/google'

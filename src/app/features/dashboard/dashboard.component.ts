@@ -146,7 +146,28 @@ export class DashboardComponent implements OnInit {
         this.result = { ...res };
 
         if (this.isLoggedIn) {
-          this.loadHistory();
+          // Build the save payload matching SaveRecordRequest in history-service
+          const record: any = {
+            operationType: this.operation.toUpperCase(),
+            userEmail: null, // history-service reads email from JWT — not needed here
+            firstOperandValue:    res.firstQuantity?.value    ?? payload.sourceQuantity?.value ?? null,
+            firstMeasurementType: res.firstQuantity?.measurementType ?? payload.sourceQuantity?.measurementType ?? this.form.measurementType,
+            firstUnit:            res.firstQuantity?.unitName ?? payload.sourceQuantity?.unitName ?? null,
+            secondOperandValue:   res.secondQuantity?.value   ?? null,
+            secondMeasurementType:res.secondQuantity?.measurementType ?? null,
+            secondUnit:           res.secondQuantity?.unitName ?? null,
+            resultOperandValue:   res.resultQuantity?.value   ?? null,
+            resultMeasurementType:res.resultQuantity?.measurementType ?? null,
+            resultUnit:           res.resultQuantity?.unitName ?? payload.targetUnit ?? null,
+            comparisonResult:     res.comparisonResult        ?? null,
+            successful:           true
+          };
+
+          this.quantityService.saveHistory(record).subscribe({
+            next: () => this.loadHistory(),
+            error: (e) => console.error('Failed to save history', e)
+          });
+
         } else if (this.operation !== 'compare') {
           this.guestHistory.add({
             operation: this.operation,
